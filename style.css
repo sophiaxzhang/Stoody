@@ -1,12 +1,13 @@
 .navbar {
-    background: #E7B87F;
+    background: #ffe2ac;
     width: 1440px;
     height: 83px;
     flex-shrink: 0;
 }
 h1 {
-    margin-top: -10px;
-    color: #B3524D;
+    margin-top: -5px;
+    color: #f5875a;
+    /* #B3524D */
     font-family: "Lilita One";
     font-size: 96px;
     font-style: normal;
@@ -14,18 +15,42 @@ h1 {
     line-height: normal;
     text-align: center;
     margin-bottom: -5px;
+    
 }
 
 h2 {
-    margin-top: -10px;
     font-family: "Outfit";
     font-size: 25px;
     font-style: normal;
     font-weight: 300;
     line-height: normal;
     text-align: center;
+    background: url(./assets/geobg.png) no-repeat center center;
+    background-size: cover;
     
 }
-form {
+.login-form {
     text-align: left;
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    background: url(./assets/geobg.png) no-repeat center center;
+    background-size: cover;
+    padding: 20px;
+    width: 100 px;
+    
+}
+
+.pref-form {
+    background: url(./assets/geobg.png) no-repeat center center;
+}
+
+.form-section {
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background: white;
+
+}
+
+.prefheading {
+    
 }
