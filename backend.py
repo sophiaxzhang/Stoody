@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import firebase_admin
 from firebase_admin import credentials, db
 import requests
@@ -6,7 +6,7 @@ import requests
 app = Flask(__name__)
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate("credential.json")  # Path to your Firebase service account key
+cred = credentials.Certificate("credentials.json")  # Path to your Firebase service account key
 # firebase_admin.initialize_app(cred)
 firebase_admin.initialize_app(cred,{"databaseURL":"https://stoody-7ad62-default-rtdb.firebaseio.com/"}) # Firestore Database
 
@@ -14,6 +14,7 @@ firebase_admin.initialize_app(cred,{"databaseURL":"https://stoody-7ad62-default-
 name = ""
 email = ""
 safe_email = ""
+list = []
 
 
 # /http://127.0.0.1:5000
@@ -39,28 +40,100 @@ def gfg():
         #db.reference("/emails/").update({safe_email: {"token":token}})
         get_classes()
 
-        return f"Your name is {name}, your token is {token}, and your email is {email}. Data saved to Firestore."
+        return redirect(url_for('preferences'))
 
-    return render_template("/login.html")
+    return render_template("login.html")
 
-# @app.route('/', methods=["GET", "POST"])
-# def getPref():
-#     global email, name, safe_email
-#     if request.method == "POST":
-#         # Getting input with name = name in HTML form
-#         noise = request.form.get("noise")
-#         # Getting input with name = token in HTML form 
-#         size = request.form.get("size") 
-#         # Getting input with name = email in HTML form
-#         time = request.form.get("times") 
+@app.route('/preferences', methods=["GET", "POST"])
+def preferences():
+    global list
+    print("PREFERENCES CALLED")
+    if request.method == "POST":
+        print("REQUEST METHOD IS POST")
+        return getPref()
+    return render_template("preferences.html", list = list)
 
-#         db.reference("/emails/" + safe_email + "/classes/").update({
-#                     #course name from db: {
-#                         "noise": noise,
-#                         "time": time,
-#                         "size": size
-#                     }
-#                 })
+
+def getPref():
+    global safe_email
+    print("getPref function called")  # Debugging
+    if request.method == "POST":
+        print("Inside POST method of getPref")  # Debugging
+        course = request.form.get("class")
+        noise = request.form.get("noise")
+        size = request.form.get("group")  # Ensure this matches your form
+        time = request.form.get("times")
+
+        # Update preferences in the database
+        db.reference("/emails/" + safe_email + "/classes/" + course).update({"noise": noise})
+        db.reference("/emails/" + safe_email + "/classes/" + course).update({"time": time})
+        db.reference("/emails/" + safe_email + "/classes/" + course).update({"size": size})
+
+        print(f"Class: {course}, Noise Level: {noise}, Preferred Time: {time}, Group Size: {size}")  # Should print on successful update
+        return redirect(url_for('preferences'))
+    # global safe_email
+    # print("PREF IS CALLED")
+    
+    # # Getting input data from the preferences form
+    # course = request.form.get("class")
+    # noise = request.form.get("noise")
+    # size = request.form.get("group")  # Changed from size to group to match your form
+    # time = request.form.get("times") 
+
+    
+    # # Update the Firebase database
+    # print()
+    # db.reference(f"/emails/{safe_email}/classes/").update({
+    #     course: {
+    #         "noise": noise,
+    #         "time": time,
+    #         "size": size
+    #     }
+    # })
+    # print(f"Class: {course}, Noise Level: {noise}, Preferred Time: {time}, Group Size: {size}")
+
+    # return render_template("preferences.html", list=list)  # Render preferences with updated list
+
+    # global safe_email
+    # print("PREF IS CALLED")
+    # if request.method == "POST":
+    #     print("IF WENT THROUGH")
+    #     course = request.form.get("class")
+    #     # Getting input with name = name in HTML form
+    #     noise = request.form.get("noise")
+    #     # Getting input with name = token in HTML form 
+    #     size = request.form.get("size") 
+    #     # Getting input with name = email in HTML form
+    #     time = request.form.get("times") 
+        
+    #     db.reference("/emails/" + safe_email + "/classes/").update({
+    #                 course: {
+    #                     {"noise": noise},
+    #                     {"time": time},
+    #                     {"size": size}
+    #                 }
+    #             })
+
+    #     print(f"Class: {course}, Noise Level: {noise}, Preferred Time: {time}, Group Size: {size}")
+    # else:
+    #     print("NOOOOOOOOOOOOOOOOOOO")
+        
+    # return render_template("/preferences.html", list = list)
+
+#         # List of courses
+#         course_names = list(db.reference("/emails/" + safe_email + "/classes/").get())
+        
+        # HTML uses course 
+
+
+        
+        # db.reference("/emails/" + safe_email + "/classes/").update({
+        #             course_names from db: {
+        #                 "noise": noise,
+        #                 "time": time,
+        #                 "size": size
+        #             }
+        #         })
 
        # Save the data to Realtime Database
         # ref = db.reference('/')  # Create a reference to the 'users' node
@@ -72,28 +145,34 @@ def gfg():
 
         # return f"Your name is {name}, your token is {token}, and your email is {email}. Data saved to Firestore."
 
-    return render_template("/preferences.html")
+    # return render_template("/preferences.html")
+
+def keep_after_colon(input_string):
+    # Split the string at the first occurrence of ': '
+    parts = input_string.split(': ', 1)
+    # Return the part after ': ', or an empty string if not found
+    return parts[1] 
 
 #@app.route('/', methods=["GET", "POST"])
 def list_courses(courses):
         print("got to list_courses")
-        global safe_email
-        list = []
+        global safe_email, list
+        print(courses)
         for course in courses:
             print(course)
-            print()
             if 'name' in course:
                 print(course['name'])
-                list += [str(course['name'])]
+                list += [keep_after_colon(str(course['name']))]
                 #db.reference("/emails/" + safe_email + "/classes/").update({str(course['name']): {"noise":0} {"times":0} {"size":0}})
                 # Assuming safe_email and course are defined appropriately
                 db.reference("/emails/" + safe_email + "/classes/").update({
-                    str(course['name']): {
+                    keep_after_colon(str(course['name'])): {
                         "noise": 0,
                         "time": 0,
                         "size": 0
                     }
                 })
+        return render_template('/preferences.html')
 
         
         #for i in range(len(list)):

@@ -24,7 +24,19 @@
           <h2>Change your study noise, time and group size preferences.</h2>
 
           <section class="pref-form">
-              <form>
+              <form method = "POST">
+                <div class="class-selection">
+                    <label for="class">Select Class:</label>
+                    <select id="class" name="class">
+                        {% if list %}
+                            {% for course in list %}
+                                <option value="{{ course }}">{{ course }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option disabled>No courses available.</option>
+                        {% endif %}
+                    </select>
+                </div>                
                 <div class="form-section">
                     <label for="noise">Preferred Noise Level:</label>
                     <select id="noise" name="noise">
