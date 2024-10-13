@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
         <meta charset="utf-8">
         <title>Stoody</title>
         <script src="src/script.js" type="module"></script>
@@ -12,11 +12,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     </head>
     <body>
-        <section class="navbar"> 
-          <a href="spots.html">Study Spots </a>
-          <a href="preferences.html">Edit Preferences </a>
-          <a href="login.html">Login</a>   
-        </section>
+      
         <h1 class="pref-h1">study spots</h1>
         <h2>Be stoodius. Form a study group and find study spots specialized to you! </h2>
         <section class="pref-form">

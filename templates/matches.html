@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <meta charset="utf-8">
+        <title>Matches</title>
+        <script src="src/script.js" type="module"></script>
+        <!-- font info -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <section class="navbar"> 
+            <a href="{{ url_for('loginLink') }}">Login</a> 
+            <a href="{{ url_for('prefLink') }}">Preferences</a> 
+            <a href="{{ url_for('matches') }}">Matches</a> 
+
+        </section>
+        <div class="stoody-h1">
+            <img class="logo" src="{{ url_for('static', filename='assets/stoody_logo.png') }}">
+            <h1 id="">matches</h1>
+        </div>
+        <h2>Find other students with similar study habits to form a study group</h2>
+
+            <h2>Matches</h2>
+            
+            {% if dict_match %}
+                <ul>
+                    {% for email, points in dict_match.items() %}
+                    <p>{{ email }}</p>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No matches found.</p>
+            {% endif %}
+      
+    </body>
+</html>

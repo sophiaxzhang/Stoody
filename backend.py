@@ -15,6 +15,8 @@ name = ""
 email = ""
 safe_email = ""
 list = []
+current_class = ""
+dict_match = {}
 
 
 # /http://127.0.0.1:5000
@@ -40,7 +42,7 @@ def gfg():
         #db.reference("/emails/").update({safe_email: {"token":token}})
         get_classes()
 
-        return redirect(url_for('preferences'))
+        return redirect(url_for('loginLink'))
 
     return render_template("login.html")
 
@@ -50,12 +52,30 @@ def preferences():
     print("PREFERENCES CALLED")
     if request.method == "POST":
         print("REQUEST METHOD IS POST")
-        return getPref()
+        getPref()
+        return redirect(url_for('matches'))
     return render_template("preferences.html", list = list)
+
+@app.route('/preferences')
+def prefLink():
+    # your code for preferences
+    return render_template("preferences.html")
+
+@app.route('/login')
+def loginLink():
+    # your code for login
+    return render_template("login.html")
+
+@app.route('/matches')
+def matches():
+    # your code for matches
+    query_emails()
+    return render_template("matches.html", dict_match = dict_match)
+
 
 
 def getPref():
-    global safe_email
+    global safe_email, current_class
     print("getPref function called")  # Debugging
     if request.method == "POST":
         print("Inside POST method of getPref")  # Debugging
@@ -64,88 +84,19 @@ def getPref():
         size = request.form.get("group")  # Ensure this matches your form
         time = request.form.get("times")
 
+        current_class = course
+
         # Update preferences in the database
         db.reference("/emails/" + safe_email + "/classes/" + course).update({"noise": noise})
         db.reference("/emails/" + safe_email + "/classes/" + course).update({"time": time})
         db.reference("/emails/" + safe_email + "/classes/" + course).update({"size": size})
 
+        db.reference("/emails/" + safe_email).update({"current": current_class})
+
         print(f"Class: {course}, Noise Level: {noise}, Preferred Time: {time}, Group Size: {size}")  # Should print on successful update
         return redirect(url_for('preferences'))
-    # global safe_email
-    # print("PREF IS CALLED")
-    
-    # # Getting input data from the preferences form
-    # course = request.form.get("class")
-    # noise = request.form.get("noise")
-    # size = request.form.get("group")  # Changed from size to group to match your form
-    # time = request.form.get("times") 
+    return render_template("matches.html", list = list)
 
-    
-    # # Update the Firebase database
-    # print()
-    # db.reference(f"/emails/{safe_email}/classes/").update({
-    #     course: {
-    #         "noise": noise,
-    #         "time": time,
-    #         "size": size
-    #     }
-    # })
-    # print(f"Class: {course}, Noise Level: {noise}, Preferred Time: {time}, Group Size: {size}")
-
-    # return render_template("preferences.html", list=list)  # Render preferences with updated list
-
-    # global safe_email
-    # print("PREF IS CALLED")
-    # if request.method == "POST":
-    #     print("IF WENT THROUGH")
-    #     course = request.form.get("class")
-    #     # Getting input with name = name in HTML form
-    #     noise = request.form.get("noise")
-    #     # Getting input with name = token in HTML form 
-    #     size = request.form.get("size") 
-    #     # Getting input with name = email in HTML form
-    #     time = request.form.get("times") 
-        
-    #     db.reference("/emails/" + safe_email + "/classes/").update({
-    #                 course: {
-    #                     {"noise": noise},
-    #                     {"time": time},
-    #                     {"size": size}
-    #                 }
-    #             })
-
-    #     print(f"Class: {course}, Noise Level: {noise}, Preferred Time: {time}, Group Size: {size}")
-    # else:
-    #     print("NOOOOOOOOOOOOOOOOOOO")
-        
-    # return render_template("/preferences.html", list = list)
-
-#         # List of courses
-#         course_names = list(db.reference("/emails/" + safe_email + "/classes/").get())
-        
-        # HTML uses course 
-
-
-        
-        # db.reference("/emails/" + safe_email + "/classes/").update({
-        #             course_names from db: {
-        #                 "noise": noise,
-        #                 "time": time,
-        #                 "size": size
-        #             }
-        #         })
-
-       # Save the data to Realtime Database
-        # ref = db.reference('/')  # Create a reference to the 'users' node
-        # ref.get()
-        # db.reference("/emails/").update({safe_email: {"name":name, 
-        #                                             "token":token}})
-        # #db.reference("/emails/").update({safe_email: {"token":token}})
-        # get_classes()
-
-        # return f"Your name is {name}, your token is {token}, and your email is {email}. Data saved to Firestore."
-
-    # return render_template("/preferences.html")
 
 def keep_after_colon(input_string):
     # Split the string at the first occurrence of ': '
@@ -167,9 +118,9 @@ def list_courses(courses):
                 # Assuming safe_email and course are defined appropriately
                 db.reference("/emails/" + safe_email + "/classes/").update({
                     keep_after_colon(str(course['name'])): {
-                        "noise": 0,
-                        "time": 0,
-                        "size": 0
+                        "noise": "",
+                        "time": "",
+                        "size": ""
                     }
                 })
         return render_template('/preferences.html')
@@ -213,122 +164,107 @@ def get_classes():
 
 
 
+
+def query_emails():
+    global dict_match
+    emails = db.reference("/emails").get()
+    
+    for email in emails:
+        match_classes(email)
+    
+    dict_match = dict(sorted(dict_match.items(), key=lambda item: item[1]))
+    del dict_match[safe_email]
+    dict_match = {k: dict_match[k] for k in reversed(dict_match)}
+    
+    print(dict_match)
+    
+            
+
+def match_classes(email):
+    global dict_match
+    this_class_pref = db.reference(f"/emails/{safe_email}/current").get()
+    other_class_pref = db.reference(f"/emails/{email}/current").get()
+
+    #print(f"{safe_email} current class: {this_class_pref}")
+    #print(f"{email} current class: {other_class_pref}")
+
+    if this_class_pref is None or other_class_pref is None:
+        print(f"No current class found for {safe_email} or {email}.")
+        return
+
+    if this_class_pref == other_class_pref:
+        dict_match[email] = compare_prefs(email)
+
+        
+    
+
+
+# called when classes match
+def compare_prefs(email):
+    global current_class
+
+    # Fetch preferences for the current user
+    this_pref = db.reference(f"/emails/{safe_email}/classes/{current_class}").get()
+    other_pref = db.reference(f"/emails/{email}/classes/{current_class}").get()
+
+    # Debugging: Check if preferences are None
+    #print(f"Current user preferences: {this_pref}")
+    #print(f"Other user preferences for {email}: {other_pref}")
+
+    if this_pref is None or other_pref is None:
+        print(f"No preferences found for {safe_email} or {email}.")
+        return 0  # Return 0 points if preferences are not found
+
+    # Ensure this_pref and other_pref are dictionaries
+    this_noise = this_pref.get("noise")
+    this_time = this_pref.get("time")
+    this_size = this_pref.get("size")
+
+    other_noise = other_pref.get("noise")
+    other_time = other_pref.get("time")
+    other_size = other_pref.get("size")
+
+    points = 0
+
+    if this_noise == other_noise:
+        points += 2
+    if this_time == other_time:
+        points += 2
+    if this_size == other_size:
+        points += 2
+
+    return points
+
+    # # compare noise, size, time
+    # # same = 3 points, one away = 2 points, two away = 1 point
+    # global current_class
+
+    # # get noise values and compare
+    # # stores noise, time, size
+    # this_pref = db.reference("/emails/" + safe_email + "/classes" + current_class).get()
+    # this_noise = this_pref[0]
+    # this_time = this_pref[1]
+    # this_size = this_pref[2] 
+    
+    # points = 0
+    # other_pref = db.reference("/emails/" + email + "/classes" + current_class).get()
+    # other_noise = other_pref[0]
+    # other_time = other_pref[1]
+    # other_size = other_pref[2]
+
+    # if this_pref is None or other_pref is None:
+    #     print(f"No preferences found for {safe_email} or {email}.")
+    #     return 0  # Return 0 points if preferences are not found
+    
+    # if this_noise == other_noise:
+    #     points += 2
+    # if this_time == other_time:
+    #     points += 2
+    # if this_size == other_size:
+    #     points += 2
+    
+    # return points
+        
+
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-# from flask import Flask, render_template, request, jsonify
-# # import firebase_admin
-# # from firebase_admin import credentials, firestore
-
-# # Flask constructor
-# app = Flask(__name__)   
- 
-# # A decorator used to tell the application
-# # which URL is associated function
-# @app.route('/login.html', methods =["GET", "POST"])
-# def gfg():
-#     if request.method == "POST":
-#        # getting input with name = fname in HTML form
-#        name = request.form.get("name")
-#        # getting input with name = lname in HTML form 
-#        token = request.form.get("token") 
-#        print(name + " " + token)
-#        return "Your name is "+ name + token
-#     return render_template("form.html")
- 
-# if __name__=='__main__':
-#    app.run()
-
-# app = Flask(__name__)
-
-# # Initialize Firebase Admin SDK
-# cred = credentials.Certificate("serviceAccountKey.json")  # Your Firebase private key JSON file
-# firebase_admin.initialize_app(cred)
-# db = firestore.client()  # Firestore Database
-
-# @app.route('/')
-# def index():
-#     return render_template('index.html')
-
-# # Route to handle form submission and save data to Firestore
-# @app.route('/submit-form', methods=['POST'])
-# def submit_form():
-#     # Get data from the form submission
-#     name = request.form['name']
-#     age = request.form['age']
-
-#     # Save the data to Firestore
-#     doc_ref = db.collection('users').add({'name': name, 'age': int(age)})
-
-#     return jsonify({"success": True, "message": "Data submitted successfully", "id": doc_ref[1].id})
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
-# from User import *
-# import firebase_admin
-# from firebase_admin import db, credentials
-
-# #autheticate to firebase
-# cred = credentials.Certificate("credentials.json")
-# firebase_admin.initialize_app(cred,{"https://stoody-7ad62-default-rtdb.firebaseio.com/"})
-
-# #creating reference to root node
-# ref = db.reference("/")
-# #retrieving data from root node (value)
-# ref.get()
-
-
-# #ref.key() gets name of reference
-    
-
-    
-# name = input("Enter your name: ")
-# email = input("Enter your email: ")
-# token = input("Enter your token: ")
-
-# def list_courses(self, courses):
-#         for course in courses:
-#             if 'name' in course:
-#                 self.list += (str(course['name']))
-
-# def get_courses(self):
-#         access_token = self.token
-#         canvas_instance = 'canvas.uw.edu'
-#         try:
-#             # API endpoint for fetching courses
-#             url = f'https://{canvas_instance}/api/v1/courses'
-            
-#             # Set the Authorization header with the Bearer token
-#             headers = {
-#                 'Authorization': f'Bearer {access_token}'
-#             }
-            
-#             # Make the GET request to the Canvas API
-#             response = requests.get(url, headers=headers)
-            
-#             # Raise an error for any HTTP response codes that are not 200 (OK)
-#             response.raise_for_status()
-
-#             # Parse and print the course data (as JSON)
-#             courses = response.json()
-
-#             self.list_courses(courses)
-            
-#         except requests.exceptions.HTTPError as http_err:
-#             print(f"HTTP error occurred: {http_err}")
-#         except Exception as err:
-#             print(f"An error occurred: {err}")
-
-# db.reference("/name").update(name)
-# db.reference("/email").update(email)
-# db.reference("/token").update(token)
-
-# db.reference("/course_list").transaction(list_courses)
-
-
-# user = User(name, email, token)
-# print(str(user.get_name()) + " " + str(user.get_email()) + " " + user.get_token())
-
-# user.get_courses()

@@ -55,7 +55,7 @@ h2 {
     font-size: 18px;
     font-style: normal;
     font-weight: 300;
-    background: url(./assets/geobg.png) no-repeat center center;
+    background: url(./static/assets/geobg.png) no-repeat center center;
     background-size: cover;
     padding: 20px;
     height: 400px;
@@ -85,7 +85,7 @@ h2 {
     font-size: 18px;
     font-style: normal;
     font-weight: 300;
-    background: url(./assets/geobg.png) no-repeat center center;
+    background: url(./static/assets/geobg.png) no-repeat center center;
     background-size: cover;
     padding: 20px;
     height: 400px;
@@ -127,7 +127,7 @@ input[type="submit"] {
 }
 
 .logo {
-    width: 150px;
+    width: 500px;
 }
 
 .stoody-h1 {
