@@ -16,14 +16,33 @@
             <a href="{{ url_for('loginLink') }}">Login</a> 
             <a href="{{ url_for('prefLink') }}">Preferences</a> 
             <a href="{{ url_for('matches') }}">Matches</a>
-            <a href="{{ url_for('spotsLink') }}">Spots</a>   
-
+            <a href="{{ url_for('spotsLink') }}"></a>     
         </section>
         <div class="stoody-h1">
             <img class="logo" src="{{ url_for('static', filename='assets/stoody_logo.png') }}">
             <h1 id="">stoody</h1>
         </div>
         <h2>Be stoodius. Form a study group and find study spots specialized to you! </h2>
+        <h3>
+            Access your Canvas token:
+            <br>
+            Log into your UW student account in canvas.uw.edu
+            <br>
+            Click the “Account” profile picture icon on the left hand panel
+            <br>
+            Navigate to “Settings” and scroll down to “Approved Integrations”
+            <br>
+            Click the “+ New Access Token” button
+            <br>
+            Insert “Stoody study group finder” into the “Purpose” box
+            <br>
+            Select a date after today’s date
+            <br>
+            Click “Generate Token” and copy the entire generated token
+            <br>
+            Paste the generated token into the token box
+            <br>
+        </h3>
         <section class="login-form">
             <form method="POST">
                 <section class="login-form">
