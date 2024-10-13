@@ -13,24 +13,35 @@
     </head>
     <body>
         <section class="navbar"> 
-          <a href="spots.html">Study Spots </a>
-          <a href="preferences.html">Edit Preferences </a>
+          <a href="spots.html">Study   Spots </a>
+          <a href="preferences.html">Edit   Preferences </a>
           <a href="login.html">Login</a>   
         </section>
-        <h1 id="">stoody</h1>
-        <h2>Be stoodius. Form a study group and find study spots specialized to you! </2>
+        <div class="stoody-h1">
+            <img class="logo" src="assets/stoody_logo.png">
+            <h1>stoody</h1>
+        </div>
+        <h2>Be stoodius. Form a study group and find study spots specialized to you! </h2>
         <section class="login-form">
             <form>
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name">
+                <div class="form-section">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name">
+                </div>
+                
+                <div class="form-section">
+                    <label for="token">Token:</label>
+                    <input type="token" id="token" name="token">
+                </div>
 
-                <label for="token">Token:</label>
-                <input type="token" id="token" name="token">
+                <div class="form-section">
+                    <label for="email">Email:</label>
+                    <input type="text" id="email" name="email">
+                </div>
 
-                <label for="email">Email:</label>
-                <input type="text" id="email" name="email">
-
-                <input type="submit">
+                <div class="submit">
+                    <input type="submit">
+                </div>
               </form>
         </section>
       
