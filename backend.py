@@ -17,6 +17,7 @@ safe_email = ""
 list = []
 current_class = ""
 dict_match = {}
+good_spots = []
 
 
 # /http://127.0.0.1:5000
@@ -42,7 +43,7 @@ def gfg():
         #db.reference("/emails/").update({safe_email: {"token":token}})
         get_classes()
 
-        return redirect(url_for('loginLink'))
+        return redirect(url_for('prefLink'))
 
     return render_template("login.html")
 
@@ -58,19 +59,23 @@ def preferences():
 
 @app.route('/preferences')
 def prefLink():
-    # your code for preferences
     return render_template("preferences.html")
 
 @app.route('/login')
 def loginLink():
-    # your code for login
-    return render_template("login.html")
+    return render_template("logßin.html")
 
 @app.route('/matches')
 def matches():
-    # your code for matches
     query_emails()
     return render_template("matches.html", dict_match = dict_match)
+
+@app.route('/spots')
+def spotsLink():
+    suggest_spot()
+    print("GOOD SPOTS")
+    print(str(len(good_spots)))
+    return render_template("spots.html", good_spots = good_spots)
 
 
 
@@ -174,7 +179,14 @@ def query_emails():
     
     dict_match = dict(sorted(dict_match.items(), key=lambda item: item[1]))
     del dict_match[safe_email]
-    dict_match = {k: dict_match[k] for k in reversed(dict_match)}
+
+
+    # Create a new dictionary with underscores replaced by periods
+    dict_match = {k.replace('_', '.'): v for k, v in dict_match.items()}
+
+    dict_match = {k: dict_match[k] for k in reversed(dict_match.keys())}
+
+
     
     print(dict_match)
     
@@ -194,9 +206,6 @@ def match_classes(email):
 
     if this_class_pref == other_class_pref:
         dict_match[email] = compare_prefs(email)
-
-        
-    
 
 
 # called when classes match
@@ -234,37 +243,46 @@ def compare_prefs(email):
         points += 2
 
     return points
+  
+def suggest_spot():
+    global safe_email, current_class, good_spots
+    noise = db.reference(f"/emails/{safe_email}/classes/{current_class}/noise").get()
+    size = db.reference(f"/emails/{safe_email}/classes/{current_class}/size").get()
 
-    # # compare noise, size, time
-    # # same = 3 points, one away = 2 points, two away = 1 point
-    # global current_class
-
-    # # get noise values and compare
-    # # stores noise, time, size
-    # this_pref = db.reference("/emails/" + safe_email + "/classes" + current_class).get()
-    # this_noise = this_pref[0]
-    # this_time = this_pref[1]
-    # this_size = this_pref[2] 
-    
-    # points = 0
-    # other_pref = db.reference("/emails/" + email + "/classes" + current_class).get()
-    # other_noise = other_pref[0]
-    # other_time = other_pref[1]
-    # other_size = other_pref[2]
-
-    # if this_pref is None or other_pref is None:
-    #     print(f"No preferences found for {safe_email} or {email}.")
-    #     return 0  # Return 0 points if preferences are not found
-    
-    # if this_noise == other_noise:
-    #     points += 2
-    # if this_time == other_time:
-    #     points += 2
-    # if this_size == other_size:
-    #     points += 2
-    
-    # return points
+    if noise == "talkative":
+        noise = "loud"
+    else:
+        noise = "quiet"
         
+    if size == "less-people":
+        size = "small"
+    else:
+        size = "large"
+    
+
+    study_spots = db.reference("/Spots").get()
+
+    for spot in study_spots:
+        print("Noise: " + noise + " vs " + str(db.reference("/Spots/" + spot + "/noise").get()) )
+        print("Size: " + size + " vs " + str(db.reference("/Spots/" + spot + "/size").get()))
+        if str(db.reference("/Spots/" + spot + "/noise").get()) == noise and str(db.reference("/Spots/" + spot + "/size").get()) == size:
+            #(study_spots + "/" + spot + "/noise").get()
+            print("ADDED SPOT")
+            good_spots.append(spot)
+
+
+    #for i in range(len(study_spots)):
+    #    spot = study_spots[i]
+    #    print(str(spot.get("noise")))
+    #    if str(spot.get("noise")) == noise and str(spot.get("size")) == size:
+    #        #(study_spots + "/" + spot + "/noise").get()
+    #        good_spots.append(spot)
+
+    #return render_template('spots.html', good_spots = good_spots)      
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
+
+        
+    

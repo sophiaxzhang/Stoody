@@ -1,11 +1,10 @@
 body {
-    background-color: white;
+    background-color: #fff4d2;
 }
 .navbar {
     display: flex;
     /* background: #ffe2ac; */
     background: #E7B87F;
-    width: 1440px;
     height: 83px;
     flex-shrink: 0;
     margin-bottom: 20px;
@@ -50,25 +49,39 @@ h2 {
     background-size: cover;
     
 }
+
+h3 {
+    font-family: "Outfit";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    text-align: center;
+    margin-bottom: 15px;
+    background-size: cover;
+}
+
 .login-form {
     font-family: "Outfit";
     font-size: 18px;
     font-style: normal;
     font-weight: 300;
-    background: url(./static/assets/geobg.png) no-repeat center center;
+    background: url(/static/assets/geobg.png) no-repeat center center;
     background-size: cover;
     padding: 20px;
-    height: 400px;
     display: flex;
     flex-direction: column;
     margin-left: 20px;
     margin-right: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    justify-content: center;
+    height: 100%;
 }
 
 .pref-h1 {
     margin-top: -5px;
-    /* color: #f5875a; */
+    vertical-align: middle;
     color: #B3524D;
     font-family: "Lilita One";
     font-size: 72px;
@@ -76,6 +89,7 @@ h2 {
     font-weight: 400;
     line-height: normal;
     text-align: center;
+    align-items: center;
     margin-bottom: 10px;
 
 }
@@ -88,13 +102,11 @@ h2 {
     background: url(./static/assets/geobg.png) no-repeat center center;
     background-size: cover;
     padding: 20px;
-    height: 400px;
+    height: 100%;
     display: flex;
     flex-direction: column;
     margin-left: 20px;
-    margin-right: 20px; 
-    /* background: #A7C2CA; */
-
+    margin-right: 20px;  
 }
 
 .form-section {
@@ -109,11 +121,39 @@ h2 {
 
 }
 
+.results {
+    align-content: center;
+}
+
+.result {
+    border-radius: 20px;
+    margin-bottom: 10px;
+    background: white;
+    width: 50%;
+    padding: 10px;
+    padding-right: 0px;
+    text-align: center;
+    justify-content: center;
+}
+
+input[type="inputQ"] {
+    background-color: rgb(239, 181, 169);
+    color: white;
+    font-family: "Outfit";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 300;
+    border-radius: 10px;
+    border-width: 1px;
+    padding: 10px;
+    border-color: white;
+}
+
 input[type="submit"] {
     background-color: rgb(239, 181, 169);
     color: white;
     font-family: "Outfit";
-    font-size: 18px;
+    font-size: 20px;
     font-style: normal;
     font-weight: 300;
     border-radius: 10px;
@@ -127,10 +167,10 @@ input[type="submit"] {
 }
 
 .logo {
-    width: 500px;
+    width: 200px;
 }
 
 .stoody-h1 {
     display: flex;
     justify-content: center;
-}
+} 

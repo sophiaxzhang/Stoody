@@ -16,25 +16,25 @@
             <a href="{{ url_for('loginLink') }}">Login</a> 
             <a href="{{ url_for('prefLink') }}">Preferences</a> 
             <a href="{{ url_for('matches') }}">Matches</a> 
+            <a href="{{ url_for('spotsLink') }}">Spots</a>   
 
         </section>
-        <div class="stoody-h1">
+        <div class="pref-h1">
             <img class="logo" src="{{ url_for('static', filename='assets/stoody_logo.png') }}">
             <h1 id="">matches</h1>
         </div>
         <h2>Find other students with similar study habits to form a study group</h2>
-
-            <h2>Matches</h2>
             
+        <div class="results">
             {% if dict_match %}
-                <ul>
+                <ul class="login-form">
                     {% for email, points in dict_match.items() %}
-                    <p>{{ email }}</p>
+                    <h2 class="result">{{ email }}</h2>
                     {% endfor %}
                 </ul>
             {% else %}
                 <p>No matches found.</p>
             {% endif %}
-      
+        </div>
     </body>
 </html>
