@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <meta charset="utf-8">
+        <title>Stoody</title>
+        <script src="src/script.js" type="module"></script>
+        <!-- font info -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <section class="navbar"> 
+          <a href="spots.html">Study   Spots </a>
+          <a href="preferences.html">Edit   Preferences </a>
+          <a href="login.html">Login</a>   
+        </section>
+        <div class="stoody-h1">
+            <img class="logo" src="assets/stoody_logo.png">
+            <h1 id="">stoody</h1>
+        </div>
+        <h2>Be stoodius. Form a study group and find study spots specialized to you! </h2>
+        <section class="login-form">
+            <form method="POST">
+                <section class="login-form">
+                    <div class="form-section">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-section">
+                        <label for="token">Token:</label>
+                        <input type="text" id="token" name="token" required>
+                    </div>
+        
+                    <div class="form-section">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+        
+                    <div class="submit">
+                        <input type="submit" value="Submit">
+                    </div>
+                </section>
+            </form>
+            <!-- <form action="{{ url_for('gfg')}}" method="post">
+                <div class="form-section">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name">
+                </div>
+                
+                <div class="form-section">
+                    <label for="token">Token:</label>
+                    <input type="token" id="token" name="token">
+                </div>
+
+                <div class="form-section">
+                    <label for="email">Email:</label>
+                    <input type="text" id="email" name="email">
+                </div>
+
+                <div class="submit">
+                    <input type="submit">
+                </div>
+              </form> -->
+        </section>
+      
+    </body>
+</html>
+
+
